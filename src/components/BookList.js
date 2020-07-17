@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import Book from "./Book";
 import SearchBar from "./SearchBar";
 
-import BookDB from "../bookDB";
-
 const BookList = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [books, setBooks] = useState(BookDB);
+  const [books, setBooks] = useState([]);
 
   const toggleBookFavorite = (bookRec) => {
     return {
@@ -25,6 +24,18 @@ const BookList = () => {
       ...books.slice(bookIndex + 1),
     ]);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:3001/books");
+        setBooks(response.data);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <div className="container-fluid">
